@@ -30,6 +30,7 @@ p {
 
 /* --- */
 
+/* Header + nav */
 .header,
 .nav {
     display: flex;
@@ -39,7 +40,7 @@ p {
 
 .header {
     justify-content: center;
-    padding: 20px;
+    padding: 20px 0px;
 }
 
 .nav {
@@ -47,17 +48,30 @@ p {
     width: 65vw;
 }
 
+a {
+    color: black;
+    text-decoration: none;
+    transition: all .15s linear;
+}
+
+a:hover {
+    transition: all .15s linear;
+}
+
 .nav>a {
     font-weight: 500;
     font-size: 16px;
-    color: black;
-    text-decoration: none;
-    transition: all .20s linear;
 }
 
 .nav>a:hover {
     color: white;
-    transition: all .20s linear;
+}
+
+/* Text */
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 h1 {
@@ -67,7 +81,48 @@ h1 {
     padding: 10px 0px;
 }
 
-.home-text {
+
+.home-text, .form {
     display: flex;
+    flex-direction: column;
     justify-content: center;
+}
+
+/* Form */
+.form {
+    align-items: center;
+    gap: 15px;
+    border-radius: 10px;
+    background-color: rgb(230, 230, 230);
+    width: 350px;
+    padding: 20px;
+}
+
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+    padding-top: 20px;
+    transition: all .15s linear;
+}
+
+.formBtn {
+    flex-grow: 1;
+    text-align: center;
+    padding: 7px;
+    margin: 3px;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    color: white;
+    background-color: #5b677d;
+    cursor: pointer;
+    transition: all .15s linear;
+}
+
+.formBtn:hover {
+    background-color: #5AB6FF;
+    transition: all .15s linear;
 }
