@@ -1,0 +1,73 @@
+/* Reset CSS */
+* {
+    min-width: 0;
+    font: inherit;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100dvh;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    text-wrap: balance;
+}
+
+p {
+    text-wrap: pretty;
+}
+
+/* --- */
+
+.header,
+.nav {
+    display: flex;
+    align-items: center;
+    background: #90c9ff;
+}
+
+.header {
+    justify-content: center;
+    padding: 20px;
+}
+
+.nav {
+    justify-content: space-between;
+    width: 65vw;
+}
+
+.nav>a {
+    font-weight: 500;
+    font-size: 16px;
+    color: black;
+    text-decoration: none;
+    transition: all .20s linear;
+}
+
+.nav>a:hover {
+    color: white;
+    transition: all .20s linear;
+}
+
+h1 {
+    text-align: center;
+    font-size: 30px;
+    font-weight: bold;
+    padding: 10px 0px;
+}
+
+.home-text {
+    display: flex;
+    justify-content: center;
+}
