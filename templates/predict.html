@@ -1,43 +1,68 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../../static/style.css">
-    <title>Despliegue</title>
-</head>
-<body>
-    <header class="header">
-        <nav class="nav">
-            <a href="/">Inicio</a>
-            <a href="/api/v1/predict">Predicción</a>
-            <a href="#">Reentrenamiento</a>
-        </nav>
-    </header>
-    <main>
-        <h1>Predicción</h1>
-        <form class="form" id="predictForm" action="/api/v1/predict" method="post">
-            <label for="t1">Test 1:
-            <input id="t1" name="t1" type="number" step="0.01" placeholder="Test 1"></label>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../../../static/style.css" />
+    <title>Rainfall Prediction App</title>
+  </head>
 
-            <label for="t2">Test 2:
-            <input id="t2" name="t2" type="number" step="0.01" placeholder="Test 2"></label>
+  <body>
+    <aside class="sideBar">
+      <nav class="nav">
+        <a href="/" class="menuItem">Home</a>
+        <a href="/api/v1/predict" class="menuItem" aria-current="page">Predict</a>
+        <a href="/api/v1/forecast" class="menuItem">Forecast</a>
+        <a href="/api/v1/update_data" class="menuItem">Update Data</a>
+        <a href="/api/v1/retrain" class="menuItem">Retrain</a>
+      </nav>
+    </aside>
+    <main class="main">
+      <section class="mainContent">
+        <h1>Rainfall Prediction Application</h1>
+        <h2>Make a rainfall prediction</h2>
+        <p>Enter climatic paramters to predict rainfall in mm</p>
+        <form
+          class="form"
+          id="predictForm"
+          action="/api/v1/predict"
+          method="post"
+        >
+          <label for="pressure">Pressure (Pa):</label>
+          <input
+            id="pressure"
+            name="pressure"
+            type="number"
+            step="0.01"
+            placeholder="101500"
+          />
 
-            <label for="t3">Test 3:
-            <input id="t3" name="t3" type="number" step="0.01" placeholder="Test 3"></label>
-            
-            <label for="t4">Test 4:
-            <input id="t4" name="t4" type="number" step="0.01" placeholder="Test 3"></label>
-            
-            <label for="t5">Test 5:
-            <input id="t5" name="t5" type="number" step="0.01" placeholder="Test 3"></label>
-        
-            <div class="actions">
-                <button class="formBtn" type="submit">Predecir</button>
-                <button class="formBtn" type="reset">Borrar</button>
-                <a class="formBtn" href="/">Volver</a>
-            </div>
+          <label for="sun">Sunshine (hrs):</label>
+          <input
+            id="sun"
+            name="sun"
+            type="number"
+            min="0"
+            step="0.01"
+            placeholder="0"
+          />
+
+          <label for="mean_temp">Mean Temperature (ºC):</label>
+          <input
+            id="mean_temp"
+            name="mean_temp"
+            type="number"
+            max="100"
+            step="0.01"
+            placeholder="11.4"
+          />
+
+          <div class="actions">
+            <button class="formBtn" type="submit">Predict</button>
+            <button class="formBtn" type="reset">Delete</button>
+          </div>
         </form>
+      </section>
     </main>
-</body>
+  </body>
 </html>

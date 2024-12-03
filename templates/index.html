@@ -1,25 +1,51 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../static/style.css">
-    <title>Despliegue</title>
-</head>
-<body>
-    <header class="header">
-        <nav class="nav">
-            <a href="/">Inicio</a>
-            <a href="/api/v1/predict">Predicción</a>
-            <a href="#">Reentrenamiento</a>
-        </nav>
-    </header>
-    <main>
-        <h1>Home</h1>
-        <div class="home-text">
-            <p>Probando 1, 2, 3...</p>
-            <p>Probando 1, 2, 3...</p>
-        </div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../static/style.css" />
+    <title>Rainfall Prediction App</title>
+  </head>
+
+  <body>
+    <aside class="sideBar">
+      <nav class="nav">
+        <a href="/" class="menuItem" aria-current="page">Home</a>
+        <a href="/api/v1/predict" class="menuItem">Predict</a>
+        <a href="/api/v1/forecast" class="menuItem">Forecast</a>
+        <a href="/api/v1/update_data" class="menuItem">Update Data</a>
+        <a href="/api/v1/retrain" class="menuItem">Retrain</a>
+      </nav>
+    </aside>
+    <main class="main">
+      <section class="mainContent">
+        <h1>Rainfall Prediction Application</h1>
+        <h2>Welcome to our app!</h2>
+        <h3>Endpoints</h3>
+        <p>This app contains the following endpoints:</p>
+        <table class="endpoint-table">
+          <tr>
+            <td class="endpoint">/</td>
+            <td>Landing page</td>
+          </tr>
+          <tr>
+            <td class="endpoint">/api/v1/predict</td>
+            <td>Endpoint for making predictions</td>
+          </tr>
+          <tr>
+            <td class="endpoint">/api/v1/forecast</td>
+            <td>Endpoint for getting forecasts</td>
+          </tr>
+          <tr>
+            <td class="endpoint">/api/v1/update_data</td>
+            <td>Endpoint for updating data</td>
+          </tr>
+          <tr>
+            <td class="endpoint">/api/v1/retrain</td>
+            <td>Endpoint for retraining the model</td>
+          </tr>
+        </table>
+      </section>
     </main>
-</body>
+  </body>
 </html>

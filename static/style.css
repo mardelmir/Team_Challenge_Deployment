@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap');
+
 /* Reset CSS */
 * {
     min-width: 0;
@@ -8,6 +11,11 @@
 *::before,
 *::after {
     box-sizing: border-box;
+}
+
+*,
+html {
+    font-family: "Source Sans 3", sans-serif;
 }
 
 body {
@@ -26,103 +34,204 @@ h6 {
 
 p {
     text-wrap: pretty;
+    margin: 5px 0px;
 }
 
 /* --- */
 
-/* Header + nav */
-.header,
-.nav {
+body {
     display: flex;
-    align-items: center;
-    background: #90c9ff;
 }
 
-.header {
-    justify-content: center;
-    padding: 20px 0px;
+h1,
+h2 {
+    font-size: 40px;
+    font-weight: 700;
+    color: #30333F;
+    margin: 1rem 0rem;
 }
 
-.nav {
-    justify-content: space-between;
-    width: 65vw;
+h2 {
+    font-size: 28px;
+    font-weight: 600;
+}
+
+h3 {
+    font-size: 20px;
+    font-weight: 600;
 }
 
 a {
     color: black;
     text-decoration: none;
     transition: all .15s linear;
+
+    &:hover {
+        transition: all .15s linear;
+    }
 }
 
-a:hover {
-    transition: all .15s linear;
+/* sideBar + nav */
+.sideBar,
+.nav {
+    display: flex;
+    flex-direction: column;
+    background: #90c9ff;
 }
 
-.nav>a {
+.sideBar {
+    width: 300px;
+    padding: 7.5rem 0rem 10rem;
+}
+
+.nav {
+    width: 100%;
+    justify-content: space-around;
+}
+
+.menuItem {
+    width: 100%;
+    text-align: center;
     font-weight: 500;
     font-size: 16px;
+    padding: 10px 0px;
+    
+    &:hover {
+        background-color: #0b498338;
+        color: white;
+    }
 }
 
-.nav>a:hover {
+.menuItem[aria-current="page"] {
+    background-color: #0b4983;
     color: white;
 }
 
-/* Text */
-main {
+/* main */
+.main,
+.mainContent,
+.form {
     display: flex;
     flex-direction: column;
+}
+
+.main {
     align-items: center;
+    flex-grow: 1.5;
+    min-height: 100vh;
 }
 
-h1 {
-    text-align: center;
-    font-size: 30px;
-    font-weight: bold;
-    padding: 10px 0px;
+.mainContent {
+    width: 100%;
+    max-width: 46rem;
+    padding: 6rem 2rem 10rem;
 }
 
+/* Home */
+li {
+    list-style: none;
+}
 
-.home-text, .form {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+.endpoint-table {
+    width: 100%;
+    max-width: 600px;
+    margin: 1rem auto;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.endpoint-table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    overflow-wrap: break-word;
+}
+
+/* .endpoint-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+} */
+
+.endpoint-table tr:hover {
+    background-color: #e4e9ee7a;
+}
+
+.endpoint {
+    width: 40%;
+    font-family: "Source Code Pro", monospace;
+    font-weight: 600;
+    color: #0b4983;
 }
 
 /* Form */
 .form {
-    align-items: center;
-    gap: 15px;
-    border-radius: 10px;
-    background-color: rgb(230, 230, 230);
-    width: 350px;
-    padding: 20px;
+    gap: 5px;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.form input {
+    margin-bottom: 1rem;
+    padding: 5px;
+    border: 1.5px solid transparent;
+    border-radius: .5rem;
+    background-color: #e4e9ee7a;
+
+    &:focus {
+        outline: none;
+        border: 1.5px solid #74b9f9;
+    }
 }
 
 
 .actions {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-around;
+    justify-content: center;
     align-items: center;
-    padding-top: 20px;
+    width: 100%;
+    margin-top: .5rem;
     transition: all .15s linear;
 }
 
 .formBtn {
-    flex-grow: 1;
+    width: 150px;
     text-align: center;
     padding: 7px;
     margin: 3px;
-    border: none;
-    border-radius: 10px;
-    font-size: 14px;
-    color: white;
-    background-color: #5b677d;
+    border: 1.25px solid #c9cfd4;
+    border-radius: .5rem;
+    font-size: 15px;
+    background-color: transparent;
     cursor: pointer;
     transition: all .15s linear;
+
+    &:hover {
+        border-color: #74b9f9;
+        color: #74b9f9;
+        transition: all .15s linear;
+    }
 }
 
-.formBtn:hover {
-    background-color: #5AB6FF;
-    transition: all .15s linear;
+
+
+/* Responsive */
+@media (max-width: 700px) {
+    body {
+        flex-direction: column;
+    }
+
+    .sideBar {
+        width: 100%;
+        padding: 0px;
+    }
+
+    .nav {
+        flex-direction: row;
+        width: 92%;
+    }
+
+    .menuItem {
+        padding: 12px 0px;
+        font-size: 15px;
+    }
+ 
 }
