@@ -87,7 +87,6 @@ a {
 
 .nav {
     width: 100%;
-    justify-content: space-around;
 }
 
 .menuItem {
@@ -225,7 +224,6 @@ li {
 
     .nav {
         flex-direction: row;
-        width: 92%;
     }
 
     .menuItem {
