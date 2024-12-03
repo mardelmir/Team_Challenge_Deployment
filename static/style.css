@@ -80,6 +80,7 @@ a {
 }
 
 .sideBar {
+    align-items: center;
     width: 300px;
     padding: 7.5rem 0rem 10rem;
 }
