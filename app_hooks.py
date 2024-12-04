@@ -25,11 +25,20 @@ def get_prediction_form():
     return render_template('predictForm.html')
     
 
+
+'''
+La petición de prueba sería:
+http://127.0.0.1:5000/api/v1/predict?pressure=15&sun=60&mean_temp=80
+'''
+
 # Predict
 @app.route('/api/v1/predict/', methods = ['POST', 'GET'])
 def make_prediction():
     prediction = None
     if request.method == 'POST':
+        # pressure
+        # sun
+        # mean_temp
         
         feature1 = float(request.form['feature1'])
         feature2 = float(request.form['feature2'])
@@ -42,19 +51,20 @@ def make_prediction():
 # Forecast
 @app.route('/api/v1/forecast/', methods = ['POST', 'GET'])
 def forecast():
-    prediction = None
+    forecast = None
     if request.method == 'POST':
-        
+ 
         feature1 = float(request.form['feature1'])
         feature2 = float(request.form['feature2'])
 
         # prediction = model.predict(np.array([[feature1, feature2]])) 
 
-    return render_template('forecast.html', prediction = prediction)
+    return render_template('forecast.html', forecast = forecast)
 
 
+# MARÍA
 # Udate Data
-@app.route('/api/v1/update_data/', methods = ['POST', 'GET'])
+@app.route('/api/v1/update_data/', methods = ['GET'])
 def update_data():
     prediction = None
     if request.method == 'POST':
