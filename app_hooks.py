@@ -19,6 +19,12 @@ def home():
     return render_template('index.html')
 
 
+# Predict Form
+@app.route('/api/v1/predict_form/', methods = ['GET'])
+def get_prediction_form():
+    return render_template('predictForm.html')
+    
+
 # Predict
 @app.route('/api/v1/predict/', methods = ['POST', 'GET'])
 def make_prediction():
@@ -79,8 +85,6 @@ def retrain_model():
 @app.route('/webhook', methods = ['POST'])
 def webhook():
     # Ruta al repositorio donde se realizará el pull
-    # path_repo = '/home/lucaszv/myFlaskApp'
-    # servidor_web = '/var/www/lucaszv_pythonanywhere_com_wsgi.py'
     path_repo = '/home/mardelmir1/Team_Challenge_Deployment'
     servidor_web = '/var/www/mardelmir1_pythonanywhere_com_wsgi.py'
 
