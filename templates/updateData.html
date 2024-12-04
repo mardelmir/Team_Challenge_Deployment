@@ -21,9 +21,29 @@
     <main class="main">
       <section class="mainContent">
         <h1>Rainfall Prediction Application</h1>
-        <div class="home-text">
-          <p>Update Data coming soon...</p>
-        </div>
+        <h2>Upload your own data</h2>
+        <p>Enter a csv file with date, cloud_cover, sunshine, global_radiation, max_temp, mean_temp, min_temp, precipitation, pressure, snow_depth as columns. </p>
+        <form
+          class="form"
+          id="updateData"
+          action="/api/v1/updateData"
+          method="post"
+        >
+          <label for="newData">Upload file:</label>
+          <input
+            id="newData"
+            name="pressure"
+            type="file"
+            accept="csv"
+            placeholder="file.csv"
+            required
+          />
+
+          <div class="actions">
+            <button class="formBtn" type="submit">Upload</button>
+            <button class="formBtn" type="reset">Delete</button>
+          </div>
+        </form>
       </section>
     </main>
   </body>

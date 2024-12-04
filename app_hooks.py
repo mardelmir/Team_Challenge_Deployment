@@ -64,17 +64,11 @@ def forecast():
 
 # MARÍA
 # Udate Data
-@app.route('/api/v1/update_data/', methods = ['GET'])
+@app.route('/api/v1/update_data/', methods = ['POST', 'GET'])
 def update_data():
-    prediction = None
     if request.method == 'POST':
-        
-        feature1 = float(request.form['feature1'])
-        feature2 = float(request.form['feature2'])
-
-        # prediction = model.predict(np.array([[feature1, feature2]])) 
-
-    return render_template('updateData.html', prediction = prediction)
+        pass
+    return render_template('updateData.html')
 
 
 # Retrain
