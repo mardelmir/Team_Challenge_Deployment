@@ -43,7 +43,7 @@ def make_prediction():
         sun = request.form['sun']
         mean_temp = request.form['mean_temp']
         
-        # This is a test to see that it retrieves info from form correctly, the prediction would go here instead
+        # This is a test to see that it retrieves form info correctly, the prediction would go here instead
         prediction_result = f'<h3>Form parameters:</h3><p>pressure: {pressure}</p><p>sun: {sun}</p><p>mean_temp: {mean_temp}</p>'
         
         # Redirection
@@ -71,7 +71,7 @@ def forecast():
     return render_template('forecast.html', forecast = forecast)
 
 
-# MARÍA
+
 # Update Data
 @app.route('/api/v1/update_data/', methods = ['POST', 'GET'])
 def update_data():
@@ -84,10 +84,11 @@ def update_data():
     return render_template('updateData.html', update_name = update_name)
 
 
+
 # Retrain
 @app.route('/api/v1/retrain/', methods = ['POST', 'GET'])
 def retrain_model():
-    prediction = None
+    metrics = None
     if request.method == 'POST':
         
         feature1 = float(request.form['feature1'])
@@ -95,7 +96,7 @@ def retrain_model():
 
         # prediction = model.predict(np.array([[feature1, feature2]])) 
 
-    return render_template('retrain.html', prediction = prediction)
+    return render_template('retrain.html', metrics = metrics)
 
 
 # Webhook

@@ -3,7 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="../../../static/cloud-rain.svg">
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="../../../static/cloud-rain.svg"
+    />
     <link rel="stylesheet" href="../../../static/style.css" />
     <title>Rainfall Prediction App</title>
   </head>
@@ -13,7 +17,9 @@
       <nav class="nav">
         <a href="/" class="menuItem">Home</a>
         <a href="/api/v1/predict_form" class="menuItem">Predict</a>
-        <a href="/api/v1/forecast" class="menuItem" aria-current="page">Forecast</a>
+        <a href="/api/v1/forecast" class="menuItem" aria-current="page"
+          >Forecast</a
+        >
         <a href="/api/v1/update_data" class="menuItem">Update Data</a>
         <a href="/api/v1/retrain" class="menuItem">Retrain</a>
       </nav>
@@ -21,9 +27,12 @@
     <main class="main">
       <section class="mainContent">
         <h1>Rainfall Prediction Application</h1>
-        <div class="home-text">
-          <p>Forecast coming soon...</p>
-        </div>
+        <h2>Forecast for the next 3 days</h2>
+        {% if forecast %}
+        <p>{{ forecast | safe }}</p>
+        {% else %} 
+        <p>Forecast feature coming soon...</p>
+        {% endif %}
       </section>
     </main>
   </body>
