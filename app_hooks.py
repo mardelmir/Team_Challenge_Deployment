@@ -9,8 +9,12 @@ from flask import Flask, render_template, jsonify, request, url_for, redirect
 
 os.chdir(os.path.dirname(__file__))
 
+UPLOAD_FOLDER = './data'
+ALLOWED_EXTENSIONS = {'csv'}
+
 app = Flask(__name__)
 app.config['DEBUG'] = True
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
 # Landing page (endpoint /)
@@ -35,16 +39,12 @@ http://127.0.0.1:5000/api/v1/predict?pressure=15&sun=60&mean_temp=80
 def make_prediction():
     if request.method == 'POST':
         # Form data
-        pressure = request.form.get('pressure')
-        sun = request.form.get('sun')
-        mean_temp = request.form.get('mean_temp')
+        pressure = request.form['pressure']
+        sun = request.form['sun']
+        mean_temp = request.form['mean_temp']
         
         # This is a test to see that it retrieves info from form correctly, the prediction would go here instead
-        prediction_result = f'''<h3>Form parameters:</h3> 
-            <p>pressure: {pressure}</p>
-            <p>sun: {sun}</p>
-            <p>mean_temp: {mean_temp}</p>
-        '''
+        prediction_result = f'<h3>Form parameters:</h3><p>pressure: {pressure}</p><p>sun: {sun}</p><p>mean_temp: {mean_temp}</p>'
         
         # Redirection
         return redirect(url_for('make_prediction', result = prediction_result))
@@ -72,12 +72,16 @@ def forecast():
 
 
 # MARÍA
-# Udate Data
+# Update Data
 @app.route('/api/v1/update_data/', methods = ['POST', 'GET'])
 def update_data():
+    update_name = None
     if request.method == 'POST':
-        pass
-    return render_template('updateData.html')
+        f = request.files['newData']
+        update_name = f.filename
+        f.save(os.path.join(app.config['UPLOAD_FOLDER'], update_name))
+    
+    return render_template('updateData.html', update_name = update_name)
 
 
 # Retrain

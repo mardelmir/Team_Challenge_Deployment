@@ -129,6 +129,10 @@ a {
     padding: 6rem 2rem 10rem;
 }
 
+.update {
+    margin-top: 1rem;
+}
+
 /* Home */
 li {
     list-style: none;
