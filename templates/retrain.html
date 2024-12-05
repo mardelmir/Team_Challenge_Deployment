@@ -28,9 +28,31 @@
       <section class="mainContent">
         <h1>Rainfall Prediction Application</h1>
         <h2>Retrain the model</h2>
+        {% if data_op %}
+        <p>Select the dataset you would like to retrain the model with. If none is selected, we'll use our data to retrain the model. If you select more than one, the model will be trained with the first that appears on the list.</p>
+        <p></p>
+        <form
+          class="form"
+          id="retrainForm"
+          action="/api/v1/retrain"
+          method="post"
+        >
+          {% for file in data_op %}
+          <div>
+            <input type="checkbox" name="dataset_name" value="{{file}}"/>
+            <label for="dataset_name">{{file}}</label>
+          </div>
+          {% endfor %}
+          <div class="actions">
+            <button class="formBtn" type="submit">Retrain</button>
+            <button class="formBtn" type="reset">Delete</button>
+          </div>
+        </form>
+        {% endif %}
+        
         {% if metrics %}
-        <p>{{ metrics | safe }}</p>
-        {% else %} 
+        <p>{{ metrics }}</p>
+        {% else %}
         <p>Retrain feature coming soon...</p>
         {% endif %}
       </section>

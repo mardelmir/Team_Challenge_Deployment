@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 
 from flask import Flask, render_template, jsonify, request, url_for, redirect
+from werkzeug.utils import secure_filename
 
 os.chdir(os.path.dirname(__file__))
 
@@ -15,6 +16,7 @@ ALLOWED_EXTENSIONS = {'csv'}
 app = Flask(__name__)
 app.config['DEBUG'] = True
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['MAX_CONTENT_LENGTH'] = 50 * 1000 # limits uploads to 50KB per file
 
 
 # Landing page (endpoint /)
@@ -42,15 +44,23 @@ def make_prediction():
         pressure = request.form['pressure']
         sun = request.form['sun']
         mean_temp = request.form['mean_temp']
-        
+
         # This is a test to see that it retrieves form info correctly, the prediction would go here instead
-        prediction_result = f'<h3>Form parameters:</h3><p>pressure: {pressure}</p><p>sun: {sun}</p><p>mean_temp: {mean_temp}</p>'
         
         # Redirection
-        return redirect(url_for('make_prediction', result = prediction_result))
+        return redirect(url_for('make_prediction', pressure = pressure, sun = sun, mean_temp = mean_temp))
     
-    # If method = GET, gets data from query parameters
-    result = request.args.get('result', None)
+    # If method = GET, get data from the query parameters
+    pressure = request.args.get('pressure', None)
+    sun = request.args.get('sun', None)
+    mean_temp = request.args.get('mean_temp', None)
+    
+    # Prepare the result as a dictionary
+    result = {
+        'pressure': pressure,
+        'sun': sun,
+        'mean_temp': mean_temp
+    } if pressure and sun and mean_temp else None
     
     # Renders template with result
     return render_template('predict.html', result = result)
@@ -78,7 +88,7 @@ def update_data():
     update_name = None
     if request.method == 'POST':
         f = request.files['newData']
-        update_name = f.filename
+        update_name = secure_filename(f.filename)
         f.save(os.path.join(app.config['UPLOAD_FOLDER'], update_name))
     
     return render_template('updateData.html', update_name = update_name)
@@ -90,13 +100,14 @@ def update_data():
 def retrain_model():
     metrics = None
     if request.method == 'POST':
-        
-        feature1 = float(request.form['feature1'])
-        feature2 = float(request.form['feature2'])
+        dataset_name = str(request.form.getlist('dataset_name')[0])
+        print(dataset_name)
 
-        # prediction = model.predict(np.array([[feature1, feature2]])) 
-
-    return render_template('retrain.html', metrics = metrics)
+    # List of uploaded files to select from
+    data_op = [file for file in os.listdir(UPLOAD_FOLDER) if file != 'dataset.zip']
+    data_op = data_op if len(data_op) != 0 else None
+    
+    return render_template('retrain.html', metrics = metrics, data_op = data_op)
 
 
 # Webhook

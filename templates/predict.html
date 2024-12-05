@@ -27,9 +27,14 @@
       <section class="mainContent">
         <h1>Rainfall Prediction Application</h1>
         {% if result %}
-        <p>{{ result | safe }}</p>
+        <h3>Entered parameters:</h3>
+        <p>Pressure: {{ result.pressure }}</p>
+        <p>Sunshine: {{ result.sun }}</p>
+        <p>Mean Tª: {{ result.mean_temp }}</p>
+        <h3>Rainfall prediction:</h3>
+
         {% else %}
-        <p>No predictions made yet.</p>
+        <p>No predictions made yet, fill the form or pass values for the parameters as queries!</p>
         {% endif %}
       </section>
     </main>
