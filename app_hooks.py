@@ -37,7 +37,7 @@ http://127.0.0.1:5000/api/v1/predict?pressure=15&sun=60&mean_temp=80
 '''
 
 # Predict
-@app.route('/api/v1/predict/', methods = ['POST', 'GET'])
+@app.route('/api/v1/predict/', methods = ['GET', 'POST'])
 def make_prediction():
     if request.method == 'POST':
         # Form data
