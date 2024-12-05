@@ -37,7 +37,7 @@ http://127.0.0.1:5000/api/v1/predict?pressure=15&sun=60&mean_temp=80
 '''
 
 # Predict
-@app.route('/api/v1/predict/', methods = ['GET', 'POST'])
+@app.route('/api/v1/predict/', methods = ['POST', 'GET'])
 def make_prediction():
     if request.method == 'POST':
         # Form data
@@ -49,7 +49,7 @@ def make_prediction():
         
         # Redirection
         return redirect(url_for('make_prediction', pressure = pressure, sun = sun, mean_temp = mean_temp))
-    
+
     # If method = GET, get data from the query parameters
     pressure = request.args.get('pressure', None)
     sun = request.args.get('sun', None)
@@ -61,7 +61,7 @@ def make_prediction():
         'sun': sun,
         'mean_temp': mean_temp
     } if pressure and sun and mean_temp else None
-    
+        
     # Renders template with result
     return render_template('predict.html', result = result)
 
