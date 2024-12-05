@@ -5,7 +5,7 @@ import subprocess
 import numpy as np
 import pandas as pd
 
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, url_for, redirect
 
 os.chdir(os.path.dirname(__file__))
 
@@ -25,27 +25,36 @@ def get_prediction_form():
     return render_template('predictForm.html')
     
 
-
 '''
-La petición de prueba sería:
+Test request for /api/v1/predict:
 http://127.0.0.1:5000/api/v1/predict?pressure=15&sun=60&mean_temp=80
 '''
 
 # Predict
 @app.route('/api/v1/predict/', methods = ['POST', 'GET'])
 def make_prediction():
-    prediction = None
     if request.method == 'POST':
-        # pressure
-        # sun
-        # mean_temp
+        # Form data
+        pressure = request.form.get('pressure')
+        sun = request.form.get('sun')
+        mean_temp = request.form.get('mean_temp')
         
-        feature1 = float(request.form['feature1'])
-        feature2 = float(request.form['feature2'])
+        # This is a test to see that it retrieves info from form correctly, the prediction would go here instead
+        prediction_result = f'''<h3>Form parameters:</h3> 
+            <p>pressure: {pressure}</p>
+            <p>sun: {sun}</p>
+            <p>mean_temp: {mean_temp}</p>
+        '''
+        
+        # Redirection
+        return redirect(url_for('make_prediction', result = prediction_result))
+    
+    # If method = GET, gets data from query parameters
+    result = request.args.get('result', None)
+    
+    # Renders template with result
+    return render_template('predict.html', result = result)
 
-        # prediction = model.predict(np.array([[feature1, feature2]])) 
-
-    return render_template('predict.html', prediction = prediction)
         
         
 # Forecast
