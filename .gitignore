@@ -9,6 +9,7 @@ __pycache__/
 # Editor
 .vscode/
 .idea/
+.ruff_cache/
 
 # Logs and databases
 *.log
