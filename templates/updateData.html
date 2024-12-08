@@ -52,11 +52,34 @@
 
           <div class="actions">
             <button class="formBtn" type="submit">Upload</button>
-            <button class="formBtn" type="reset">Delete</button>
+            <button class="formBtn" type="reset">Reset</button>
           </div>
         </form>
         {% if update_name %}
         <p class="update">{{ update_name | safe }} successfully uploaded!</p>
+        {% endif %}
+        {% if data_op %}
+        <p>Select the dataset you would like to detele:</p>
+        <p></p>
+        <form
+          class="form"
+          id="deleteForm"
+          action="/api/v1/delete_data"
+          method="post"
+        >
+          {% for file in data_op %}
+          <div>
+            <input type="checkbox" name="dataset_name" value="{{file}}"/>
+            <label for="dataset_name">{{file}}</label>
+          </div>
+          {% endfor %}
+          <div class="actions">
+            <button class="formBtn" type="submit">Delete</button>
+          </div>
+        </form>
+        {% endif %}
+        {% if delete_name %}
+        <p>Deleted item: {{delete_name}}</p>
         {% endif %}
       </section>
     </main>

@@ -67,8 +67,8 @@ def make_prediction():
 def forecast():
     forecast = None
     if request.method == 'POST':
-        _dummy_feat1 = float(request.form['feature1'])
-        _dummy_feat2 = float(request.form['feature2'])
+        _dummy_1 = float(request.form['feature1'])
+        _dummy_2 = float(request.form['feature2'])
 
         # prediction = model.predict(np.array([[feature1, feature2]]))
 
@@ -84,7 +84,35 @@ def update_data():
         update_name = secure_filename(f.filename)
         f.save(os.path.join(app.config['UPLOAD_FOLDER'], update_name))
 
-    return render_template('updateData.html', update_name=update_name)
+    # List of uploaded files to select from
+    data_op = [file for file in os.listdir(UPLOAD_FOLDER) if file != 'dataset.zip']
+    data_op = data_op if len(data_op) != 0 else None
+
+    return render_template('updateData.html', update_name=update_name, data_op=data_op)
+
+
+# Delete Data
+@app.route('/api/v1/delete_data', methods=['POST'])
+def delete_data():
+    # List of uploaded files to select from
+    data_op = [file for file in os.listdir(UPLOAD_FOLDER) if file != 'dataset.zip']
+    data_op = data_op if len(data_op) != 0 else None
+
+    # List of files to delete
+    to_delete = request.form.getlist('dataset_name')
+
+    for file in to_delete:
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], file)
+        if os.path.exists(file_path):
+            try:
+                os.remove(file_path)
+                return redirect(url_for('update_data'))
+            except Exception as e:
+                return jsonify({'Error': f'could not delete file {file}: {str(e)}'}), 500
+        else:
+            return jsonify({'Error': 'specified file does not exist'}), 404
+
+    return render_template('updateData.html', data_op=data_op, delete_name=to_delete)
 
 
 # Retrain
