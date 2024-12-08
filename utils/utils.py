@@ -33,10 +33,21 @@ def save_to_zip(data: pd.DataFrame, zip_path: str, file_name: str):
     os.remove(file_name)
 
 
+def get_file_names(upload_folder) -> list:
+    data_op = [file for file in os.listdir(upload_folder) if file != 'dataset.zip']
+    return data_op if len(data_op) != 0 else None
+
+
 # =====================================================================================================================================================================
 # Cross-Validate
 
-scaler = pkl.load(open('../transformers/scaler.pkl', 'rb'))
+script_dir = os.path.dirname(os.path.abspath(__file__))
+file_path = os.path.join(script_dir, '../transformers/scaler.pkl')
+
+with open(file_path, 'rb') as file:
+    scaler = pkl.load(file)
+
+# scaler = pkl.load(open('../transformers/scaler.pkl', 'rb'))
 
 
 def cross_validate_models(models: dict, X_train, y_train) -> pd.DataFrame:

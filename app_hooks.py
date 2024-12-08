@@ -1,10 +1,12 @@
 import os
 import pickle
 import subprocess
+import sys
 
 import numpy as np
 import pandas as pd
 from flask import Flask, jsonify, redirect, render_template, request, url_for
+from utils.utils import get_file_names
 from werkzeug.utils import secure_filename
 
 os.chdir(os.path.dirname(__file__))
@@ -85,8 +87,7 @@ def update_data():
         f.save(os.path.join(app.config['UPLOAD_FOLDER'], update_name))
 
     # List of uploaded files to select from
-    data_op = [file for file in os.listdir(UPLOAD_FOLDER) if file != 'dataset.zip']
-    data_op = data_op if len(data_op) != 0 else None
+    data_op = get_file_names(UPLOAD_FOLDER)
 
     return render_template('updateData.html', update_name=update_name, data_op=data_op)
 
@@ -95,22 +96,23 @@ def update_data():
 @app.route('/api/v1/delete_data', methods=['POST'])
 def delete_data():
     # List of uploaded files to select from
-    data_op = [file for file in os.listdir(UPLOAD_FOLDER) if file != 'dataset.zip']
-    data_op = data_op if len(data_op) != 0 else None
+    data_op = get_file_names(UPLOAD_FOLDER)
 
-    # List of files to delete
-    to_delete = request.form.getlist('dataset_name')
+    if request.method == 'POST':
+        # List of files to delete
+        to_delete = request.form.getlist('dataset_name')
 
-    for file in to_delete:
-        file_path = os.path.join(app.config['UPLOAD_FOLDER'], file)
-        if os.path.exists(file_path):
-            try:
-                os.remove(file_path)
-                return redirect(url_for('update_data'))
-            except Exception as e:
-                return jsonify({'Error': f'could not delete file {file}: {str(e)}'}), 500
-        else:
-            return jsonify({'Error': 'specified file does not exist'}), 404
+        for file in to_delete:
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], file)
+            if os.path.exists(file_path):
+                try:
+                    os.remove(file_path)
+                except Exception as e:
+                    return jsonify({'Error': f'could not delete file {file}: {str(e)}'}), 500
+            else:
+                return jsonify({'Error': 'specified file does not exist'}), 404
+
+        return redirect(url_for('update_data'))
 
     return render_template('updateData.html', data_op=data_op, delete_name=to_delete)
 
@@ -124,8 +126,7 @@ def retrain_model():
         print(dataset_name)
 
     # List of uploaded files to select from
-    data_op = [file for file in os.listdir(UPLOAD_FOLDER) if file != 'dataset.zip']
-    data_op = data_op if len(data_op) != 0 else None
+    data_op = get_file_names(UPLOAD_FOLDER)
 
     return render_template('retrain.html', metrics=metrics, data_op=data_op)
 
