@@ -11,7 +11,7 @@ from werkzeug.utils import secure_filename
 
 os.chdir(os.path.dirname(__file__))
 
-UPLOAD_FOLDER = './data'
+UPLOAD_FOLDER = './data/uploads'
 ALLOWED_EXTENSIONS = {'csv'}
 
 app = Flask(__name__)
@@ -73,7 +73,7 @@ def make_prediction():
 
     # MDM: Ambos métodos son necesarios:
     # - El POST es el endpoind donde el formulario envía los datos (mirar templates -> predictForm.html -> líneas 29 y 30)
-    # - El GET es para recoger los datos de la URL, lo que no hace falta ahí es el prediction pero ambos métodos son necesarios.
+    # - El GET es para recoger los datos de la URL, lo que no hace falta ahí es el prediction (modificado ya) pero ambos métodos son necesarios.
 
     # If method = GET, get data from the query parameters
     cloud = request.args.get('cloud', None)
