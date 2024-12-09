@@ -28,13 +28,48 @@
         <h1>Rainfall Prediction Application</h1>
         {% if result %}
         <h3>Entered parameters:</h3>
-        <p>Pressure (Pa): {{ result.pressure }}</p>
+        <table class="params-table">
+          <tr>
+            <td class="param">Cloud (oktas)</td>
+            <td class="result">{{ result.cloud }}</td>
+            <td class="param">Mean Temperature (ºC)</td>
+            <td class="result">{{ result.mean_temp }}</td>
+          </tr>
+          <tr>
+            <td class="param">Sunshine (hrs)</td>
+            <td class="result">{{ result.sun }}</td>
+            <td class="param">Min Temperature (ºC)</td>
+            <td class="result">{{ result.min_temp }}</td>
+          </tr>
+          <tr>
+            <td class="param">Global Radiation (W/m<sup>2</sup>)</td>
+            <td class="result">{{ result.radiation }}</td>
+            <td class="param">Pressure (Pa)</td>
+            <td class="result">{{ result.pressure }}</td>
+          </tr>
+          <tr>
+            <td class="param">Max Temperature (ºC)</td>
+            <td class="result">{{ result.max_temp }}</td>
+            <td class="param">Snow (cm)</td>
+            <td class="result">{{ result.snow }}</td>
+          </tr>
+        </table>
+        <!-- <p>Cloud (oktas): {{ result.cloud }}</p>
         <p>Sunshine (hrs): {{ result.sun }}</p>
+        <p>Global Radiation (W/m<sup>2</sup>): {{ result.radiation }}</p>
+        <p>Max Temperature (ºC): {{ result.max_temp }}</p>
         <p>Mean Temperature (ºC): {{ result.mean_temp }}</p>
-        <h3>Rainfall prediction:</h3>
+        <p>Min Temperature (ºC): {{ result.min_temp }}</p>
+        <p>Pressure (Pa): {{ result.pressure }}</p>
+        <p>Snow (cm): {{ result.snow }}</p> -->
+
+        <h3>Rainfall prediction: <span class="prediction">{{ result.prediction }} mm</span></h3>
 
         {% else %}
-        <p>No predictions made yet, fill the form or pass values for the parameters as queries!</p>
+        <p>
+          No predictions made yet, fill the form or pass values for the
+          parameters as queries!
+        </p>
         {% endif %}
       </section>
     </main>

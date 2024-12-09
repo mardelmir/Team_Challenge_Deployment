@@ -142,7 +142,8 @@ li {
     list-style: none;
 }
 
-.endpoint-table {
+.endpoint-table,
+.params-table {
     width: 100%;
     max-width: 600px;
     margin: 1rem auto;
@@ -160,11 +161,36 @@ li {
     background-color: #e4e9ee7a;
 }
 
-.endpoint {
+.params-table {
+    margin: 0.5rem auto;
+}
+
+.params-table td {
+    padding: 5px;
+    border: 1px solid #ddd;
+    overflow-wrap: break-word;
+}
+
+.params-table td[class='result']:hover {
+    background-color: #e4e9ee7a;
+}
+
+.endpoint,
+.param {
     width: 40%;
     font-family: "Source Code Pro", monospace;
-    font-weight: 600;
     color: #0b4983;
+    font-weight: 600;
+}
+
+.param {
+    width: 30%;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+.prediction {
+    color: #74b9f9;
 }
 
 /* Form */

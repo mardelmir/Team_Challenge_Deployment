@@ -3,7 +3,8 @@ import pickle
 import subprocess
 
 import numpy as np
-import pandas as pd
+
+# import pandas as pd
 from flask import Flask, jsonify, redirect, render_template, request, url_for
 from utils.utils import get_file_names
 from werkzeug.utils import secure_filename
@@ -33,48 +34,93 @@ def get_prediction_form():
 
 """
 Test request for /api/v1/predict:
-http://127.0.0.1:5000/api/v1/predict?pressure=15&sun=60&mean_temp=80
+http://127.0.0.1:5000/api/v1/predict?cloud=4.0&sun=6&radiation=9.0&max_temp=12&mean_temp=10&min_temp=2&pressure=101000&snow=2.0
 """
 
 
 # Predict
-
-with open('./models/best_model.pkl', 'rb') as file:     # Añadido por Carlos
-    model = pickle.load(file)                           # Añadido por Carlos
-
-
 @app.route('/api/v1/predict/', methods=['POST', 'GET'])
 def make_prediction():
     if request.method == 'POST':
         # Form data
-        pressure = request.form['pressure']
+        cloud = request.form['cloud']
         sun = request.form['sun']
+        radiation = request.form['radiation']
+        max_temp = request.form['max_temp']
         mean_temp = request.form['mean_temp']
-
-        # This is a test to see that it retrieves form info correctly, the prediction would go here instead
-        input_features = [[pressure, sun, mean_temp]]   # Añadido por Carlos
-        # Need to put the input data through the scaler used to produce the model before making prediction
-        prediction = model.predict(input_features)      # Añadido por Carlos
+        min_temp = request.form['min_temp']
+        pressure = request.form['pressure']
+        snow = request.form['snow']
 
         # Redirection
-        return redirect(url_for('make_prediction', pressure=pressure, sun=sun, mean_temp=mean_temp, prediction=prediction[0]))  # Modificado por Carlos
+        return redirect(
+            url_for(
+                'make_prediction',
+                cloud=cloud,
+                sun=sun,
+                radiation=radiation,
+                max_temp=max_temp,
+                mean_temp=mean_temp,
+                min_temp=min_temp,
+                pressure=pressure,
+                snow=snow,
+            )
+        )  # Modificado por Carlos + María
 
     # WJJ- No entiendo esta parte en que hemos mezclado POST y GET requests
     # parece que estamos haciendo un redirect del POST a un GET pero con la prediction metida como un parametro del URL?
     # No tiene mas sentido simplemente return the prediction en el POST request y hacer el render directamente?
-    # If method = GET, get data from the query parameters
-    pressure = request.args.get('pressure', None)
-    sun = request.args.get('sun', None)
-    mean_temp = request.args.get('mean_temp', None)
-    prediction = request.args.get('prediction', None)   # Añadido por Carlos
 
-    # Prepare the result as a dictionary
-    result = {'pressure': pressure, 'sun': sun, 'mean_temp': mean_temp, 'prediction': prediction} if pressure and sun and mean_temp else None   # Modificado por Carlos
+    # MDM: Ambos métodos son necesarios:
+    # - El POST es el endpoind donde el formulario envía los datos (mirar templates -> predictForm.html -> líneas 29 y 30)
+    # - El GET es para recoger los datos de la URL, lo que no hace falta ahí es el prediction pero ambos métodos son necesarios.
+
+    # If method = GET, get data from the query parameters
+    cloud = request.args.get('cloud', None)
+    sun = request.args.get('sun', None)
+    radiation = request.args.get('radiation', None)
+    max_temp = request.args.get('max_temp', None)
+    mean_temp = request.args.get('mean_temp', None)
+    min_temp = request.args.get('min_temp', None)
+    pressure = request.args.get('pressure', None)
+    snow = request.args.get('snow', None)
+
+    data = [cloud, sun, radiation, max_temp, mean_temp, min_temp, pressure, snow]
+    result = None
+
+    if all(data):
+        input_features = np.array(
+            [[cloud, sun, radiation, max_temp, mean_temp, min_temp, pressure, snow]]
+        )  # Añadido por Carlos
+
+        # Need to put the input data through the scaler used to produce the model before making prediction??
+        # REVIEW: SCALER
+
+        model = pickle.load(open('./models/best_model.pkl', 'rb'))
+        prediction = model.predict(input_features)[0]  # Añadido por Carlos
+
+        # Prepare the result as a dictionary
+        result = (
+            {
+                'cloud': cloud,
+                'sun': sun,
+                'radiation': radiation,
+                'max_temp': max_temp,
+                'mean_temp': mean_temp,
+                'min_temp': min_temp,
+                'pressure': pressure,
+                'snow': snow,
+                'prediction': round(prediction, 2),
+            }
+            if all(data)
+            else None
+        )  # Modificado por Carlos + María
 
     # Renders template with result
     return render_template('predict.html', result=result)
 
 
+# REVIEW FORECAST, REMOVE IF NOT NECESSARY
 # Forecast
 @app.route('/api/v1/forecast/', methods=['POST', 'GET'])
 def forecast():
@@ -128,6 +174,7 @@ def delete_data():
     return render_template('updateData.html', data_op=data_op, delete_name=to_delete)
 
 
+# REVIEW: IMPORTANT!!!
 # Retrain
 @app.route('/api/v1/retrain/', methods=['POST', 'GET'])
 def retrain_model():
