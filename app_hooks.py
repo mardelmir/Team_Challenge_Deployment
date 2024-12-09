@@ -38,6 +38,11 @@ http://127.0.0.1:5000/api/v1/predict?pressure=15&sun=60&mean_temp=80
 
 
 # Predict
+
+with open('./models/best_model.pkl', 'rb') as file:     # Añadido por Carlos
+    model = pickle.load(file)                           # Añadido por Carlos
+
+
 @app.route('/api/v1/predict/', methods=['POST', 'GET'])
 def make_prediction():
     if request.method == 'POST':
@@ -47,17 +52,20 @@ def make_prediction():
         mean_temp = request.form['mean_temp']
 
         # This is a test to see that it retrieves form info correctly, the prediction would go here instead
+        input_features = [[pressure, sun, mean_temp]]   # Añadido por Carlos
+        prediction = model.predict(input_features)      # Añadido por Carlos
 
         # Redirection
-        return redirect(url_for('make_prediction', pressure=pressure, sun=sun, mean_temp=mean_temp))
+        return redirect(url_for('make_prediction', pressure=pressure, sun=sun, mean_temp=mean_temp, prediction=prediction[0]))  # Modificado por Carlos
 
     # If method = GET, get data from the query parameters
     pressure = request.args.get('pressure', None)
     sun = request.args.get('sun', None)
     mean_temp = request.args.get('mean_temp', None)
+    prediction = request.args.get('prediction', None)   # Añadido por Carlos
 
     # Prepare the result as a dictionary
-    result = {'pressure': pressure, 'sun': sun, 'mean_temp': mean_temp} if pressure and sun and mean_temp else None
+    result = {'pressure': pressure, 'sun': sun, 'mean_temp': mean_temp, 'prediction': prediction} if pressure and sun and mean_temp else None   # Modificado por Carlos
 
     # Renders template with result
     return render_template('predict.html', result=result)
