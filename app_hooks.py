@@ -53,11 +53,15 @@ def make_prediction():
 
         # This is a test to see that it retrieves form info correctly, the prediction would go here instead
         input_features = [[pressure, sun, mean_temp]]   # Añadido por Carlos
+        # Need to put the input data through the scaler used to produce the model before making prediction
         prediction = model.predict(input_features)      # Añadido por Carlos
 
         # Redirection
         return redirect(url_for('make_prediction', pressure=pressure, sun=sun, mean_temp=mean_temp, prediction=prediction[0]))  # Modificado por Carlos
 
+    # WJJ- No entiendo esta parte en que hemos mezclado POST y GET requests
+    # parece que estamos haciendo un redirect del POST a un GET pero con la prediction metida como un parametro del URL?
+    # No tiene mas sentido simplemente return the prediction en el POST request y hacer el render directamente?
     # If method = GET, get data from the query parameters
     pressure = request.args.get('pressure', None)
     sun = request.args.get('sun', None)
