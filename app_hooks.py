@@ -12,18 +12,20 @@ os.chdir(os.path.dirname(__file__))
 
 SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
 UPLOAD_FOLDER = './data/uploads'
+TEMP_MODEL_PATH = './models/temp_model.pkl'
 ALLOWED_EXTENSIONS = {'csv'}
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['MAX_CONTENT_LENGTH'] = 50 * 1000  # limits uploads to 50KB per file
+app.config['MAX_CONTENT_LENGTH'] = 350 * 1000  # limits uploads to 50KB per file
 
 
 # Landing page (endpoint /)
 @app.route('/', methods=['GET'])
 def home():
-    return render_template('index.html')
+    message = request.args.get('message')
+    return render_template('index.html', message=message)
 
 
 # Predict Form
@@ -144,28 +146,66 @@ def delete_data():
 # Retrain
 @app.route('/api/v1/retrain/', methods=['POST', 'GET'])
 def retrain_model():
+    # Show original metrics
     json_url = os.path.join(SITE_ROOT, './data', 'evaluation_results.json')
     original_metrics = json.load(open(json_url))
 
-    # dataset_name = 'original'
-
-    # if request.method == 'POST':
-    #     dataset_name = str(request.form.getlist('dataset_name')[0])
-    #     print(dataset_name)
-
-    # Review
     # List of uploaded files to select from
     data_op = u.get_file_names(UPLOAD_FOLDER)
 
-    model = pickle.load(open('./models/best_model.pkl', 'rb'))
-    new_model = u.retrain_model(model)
+    new_metrics = None
 
-    return render_template('retrain.html', original_metrics=original_metrics, new_metrics=new_model[0], data_op=data_op)
+    if not data_op:
+        # Load original model and scaler
+        model = pickle.load(open('./models/best_model.pkl', 'rb'))
+        scaler = pickle.load(open('./transformers/scaler.pkl', 'rb'))
+
+        # Retrain with default dataset
+        new_model = u.retrain_model(model, scaler)
+        new_metrics = new_model[0]
+        pickle.dump(new_model[1], open(TEMP_MODEL_PATH, 'wb'))
+
+    elif request.method == 'POST':
+        # Process form to get selected dataset name
+        dataset_name = str(request.form.getlist('dataset_name')[0])
+
+        # Load original model and scaler
+        model = pickle.load(open('./models/best_model.pkl', 'rb'))
+        scaler = pickle.load(open('./transformers/scaler.pkl', 'rb'))
+
+        if dataset_name != 'default':
+            # Retrain with selected dataset
+            new_data_path = f'{UPLOAD_FOLDER}/{dataset_name}'
+            new_model = u.retrain_model(model, scaler, file_path=new_data_path)
+        else:
+            # Retrain with default data
+            new_model = u.retrain_model(model, scaler)
+
+        new_metrics = new_model[0]
+        pickle.dump(new_model[1], open(TEMP_MODEL_PATH, 'wb'))
+
+    return render_template('retrain.html', original_metrics=original_metrics, new_metrics=new_metrics, data_op=data_op)
 
 
 @app.route('/api/v1/save_model', methods=['POST'])
 def save_model():
-    pass
+    answer = str(request.form.getlist('save_new_model')[0])
+    print(answer)
+    if answer == 'yes':
+        # Replace the original model with the new one
+        if os.path.exists(TEMP_MODEL_PATH):
+            os.rename('./models/best_model.pkl', './models/original_model.pkl')
+            os.rename(TEMP_MODEL_PATH, './models/best_model.pkl')
+            message = 'The retrained model has been saved successfully.'
+        else:
+            message = 'No temporary model found. Retrain the model first.'
+    else:
+        # Discard the temporary model
+        if os.path.exists(TEMP_MODEL_PATH):
+            os.remove(TEMP_MODEL_PATH)
+        message = 'The retrained model was discarded.'
+
+    return redirect(url_for('home', message=message))
 
 
 # Webhook

@@ -28,31 +28,31 @@
         <h1>Rainfall Prediction Application</h1>
         <h2>Retrain the model</h2>
         <h3>Original Metrics</h3>
+
         <table class="metrics-table">
           <tr>
             <td class="metric">Model</td>
-            <td class="result">{{ original_metrics.Model[0] }}</td>
+            <td class="metric-result">{{ original_metrics.Model[0] }}</td>
           </tr>
           <tr>
             <td class="metric">MSE</td>
-            <td class="result">{{ original_metrics.MSE[0] }}</td>
+            <td class="metric-result">{{ original_metrics.MSE[0] }}</td>
           </tr>
           <tr>
             <td class="metric">RMSE</td>
-            <td class="result">{{ original_metrics.RMSE[0] }}</td>
+            <td class="metric-result">{{ original_metrics.RMSE[0] }}</td>
           </tr>
           <tr>
             <td class="metric">MAPE</td>
-            <td class="result">{{ original_metrics.MAPE[0] }}</td>
+            <td class="metric-result">{{ original_metrics.MAPE[0] }}</td>
           </tr>
         </table>
 
         {% if data_op %}
         <p>
-          Select the dataset you would like to retrain the model with. If none
-          is selected, we'll use our data to retrain the model. If you select
-          more than one, the model will be trained with the first that appears
-          on the list.
+          Select the dataset you would like to retrain the model with. If you
+          select more than one, the model will be trained with the first
+          selected dataset from the list.
         </p>
         <p></p>
         <form
@@ -61,6 +61,10 @@
           action="/api/v1/retrain"
           method="post"
         >
+          <div>
+            <input type="checkbox" name="dataset_name" value="default" />
+            <label for="dataset_name">Default data</label>
+          </div>
           {% for file in data_op %}
           <div>
             <input type="checkbox" name="dataset_name" value="{{file}}" />
@@ -72,40 +76,49 @@
             <button class="formBtn" type="reset">Reset</button>
           </div>
         </form>
+        {% else %}
+        <p>New model retrained with default data</p>
         {% endif %} {% if new_metrics %}
         <h3>New Metrics</h3>
         <table class="metrics-table">
           <tr>
             <td class="metric">Model</td>
-            <td class="result">{{ new_metrics.Model[0] }}</td>
+            <td class="metric-result">{{ new_metrics.Model[0] }}</td>
           </tr>
           <tr>
             <td class="metric">MSE</td>
-            <td class="result">{{ new_metrics.MSE[0] }}</td>
+            <td class="metric-result">{{ new_metrics.MSE[0] }}</td>
           </tr>
           <tr>
             <td class="metric">RMSE</td>
-            <td class="result">{{ new_metrics.RMSE[0] }}</td>
+            <td class="metric-result">{{ new_metrics.RMSE[0] }}</td>
           </tr>
           <tr>
             <td class="metric">MAPE</td>
-            <td class="result">{{ new_metrics.MAPE[0] }}</td>
+            <td class="metric-result">{{ new_metrics.MAPE[0] }}</td>
           </tr>
         </table>
 
-        <form >
-          Do you want to keep the new model?
-          <input type="checkbox" name="yes" value="yes"/>
-          <label for="yes">Yes</label>
-          <input type="checkbox" name="no" value="no"/>
-          <label for="no">No</label>
+        <form
+          class="form"
+          id="saveModel"
+          action="/api/v1/save_model"
+          method="post"
+        >
+          <p>Do you want to keep the new model?</p>
+          <div>
+            <input type="checkbox" name="save_new_model" value="yes" />
+            <label for="save_new_model">Yes</label>
+          </div>
+          <div>
+            <input type="checkbox" name="save_new_model" value="no" />
+            <label for="save_new_model">No</label>
+          </div>
 
           <div class="actions">
             <button class="formBtn" type="submit">Send</button>
           </div>
         </form>
-        {% else %}
-        <p>Retrain model with default data</p>
         {% endif %}
       </section>
     </main>

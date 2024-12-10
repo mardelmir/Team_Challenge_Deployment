@@ -319,15 +319,23 @@ def save_evaluation_results(results):
 
 # =====================================================================================================================================================================
 # Retrain
-def retrain_model(model, file_path=None):
-    # Read the original and saved CSV file
-    with open('./data/new_data.csv', 'r', newline='', encoding='utf-8') as f:
-        reader = csv.reader(f)
-        new_header = next(reader)  # Extract the header
-        new_data = [row for row in reader]  # Extract the data
-        print('Original data read successfully')
+def retrain_model(model, scaler, file_path=None):
+    if file_path is not None:
+        # Read uploaded CSV file
+        with open(file_path, 'r', newline='', encoding='utf-8') as f:
+            reader = csv.reader(f)
+            new_header = next(reader)  # Extract the header
+            new_data = [row for row in reader]  # Extract the data
+            print('Uploaded data read successfully')
+    else:
+        # Read default new CSV file
+        with open('./data/new_data.csv', 'r', newline='', encoding='utf-8') as f:
+            reader = csv.reader(f)
+            new_header = next(reader)  # Extract the header
+            new_data = [row for row in reader]  # Extract the data
+            print('New default data read successfully')
 
-    # Read the original and saved CSV file
+    # Read the original CSV file
     with open('./data/original_data.csv', 'r', newline='', encoding='utf-8') as f:
         reader = csv.reader(f)
         original_header = next(reader)  # Extract the header
@@ -344,6 +352,9 @@ def retrain_model(model, file_path=None):
 
     # Process the data using utils function process_data
     X, y = process_data(original_header, updated_data)
+
+    # Scale data with original scaler
+    X = scaler.transform(X)
 
     # Split data into X, y pairs for train and test sets
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=13)
