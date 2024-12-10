@@ -15,6 +15,7 @@ This repository focuses on deploying a machine learning model on PythonAnywhere,
 | `/api/v1/update_data`  | `GET`, `POST` | Uploads new data (csv files)              |
 | `/api/v1/delete_data`  | `POST`        | Deletes previously uploaded files (form)  |
 | `/api/v1/retrain`      | `GET`, `POST` | Retrains model                            |
+| `/api/v1/save_model`   | `POST`        | Saves or discards retrained model (form)  |
 | `/webhook`             | `POST`        | Automates updates                         |
 
 
