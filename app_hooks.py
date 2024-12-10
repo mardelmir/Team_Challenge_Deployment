@@ -1,16 +1,16 @@
+import json
 import os
 import pickle
 import subprocess
 
 import numpy as np
-
-# import pandas as pd
+import utils.utils_V2 as u
 from flask import Flask, jsonify, redirect, render_template, request, url_for
-from utils.utils import get_file_names
 from werkzeug.utils import secure_filename
 
 os.chdir(os.path.dirname(__file__))
 
+SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
 UPLOAD_FOLDER = './data/uploads'
 ALLOWED_EXTENSIONS = {'csv'}
 
@@ -34,7 +34,7 @@ def get_prediction_form():
 
 """
 Test request for /api/v1/predict:
-http://127.0.0.1:5000/api/v1/predict?cloud=4.0&sun=6&radiation=9.0&max_temp=12&mean_temp=10&min_temp=2&pressure=101000&snow=2.0
+http://127.0.0.1:5000/api/v1/predict?cloud=4.0&sun=6&radiation=9.0&max_temp=12&mean_temp=10&min_temp=2&pressure=101&snow=2.0
 """
 
 
@@ -49,8 +49,7 @@ def make_prediction():
         max_temp = request.form['max_temp']
         mean_temp = request.form['mean_temp']
         min_temp = request.form['min_temp']
-        pressure = request.form['pressure']
-        snow = request.form['snow']
+        pressure = float(request.form['pressure']) * 1000
 
         # Redirection
         return redirect(
@@ -63,7 +62,6 @@ def make_prediction():
                 mean_temp=mean_temp,
                 min_temp=min_temp,
                 pressure=pressure,
-                snow=snow,
             )
         )  # Modificado por Carlos + María
 
@@ -76,28 +74,30 @@ def make_prediction():
     # - El GET es para recoger los datos de la URL, lo que no hace falta ahí es el prediction (modificado ya) pero ambos métodos son necesarios.
 
     # If method = GET, get data from the query parameters
-    cloud = request.args.get('cloud', None)
-    sun = request.args.get('sun', None)
-    radiation = request.args.get('radiation', None)
-    max_temp = request.args.get('max_temp', None)
-    mean_temp = request.args.get('mean_temp', None)
-    min_temp = request.args.get('min_temp', None)
-    pressure = request.args.get('pressure', None)
-    snow = request.args.get('snow', None)
+    cloud = float(request.args.get('cloud', None))
+    sun = float(request.args.get('sun', None))
+    radiation = float(request.args.get('radiation', None))
+    max_temp = float(request.args.get('max_temp', None))
+    mean_temp = float(request.args.get('mean_temp', None))
+    min_temp = float(request.args.get('min_temp', None))
+    pressure = float(request.args.get('pressure', None))
 
-    data = [cloud, sun, radiation, max_temp, mean_temp, min_temp, pressure, snow]
+    data = [cloud, sun, radiation, max_temp, mean_temp, min_temp, pressure]
     result = None
 
     if all(data):
         input_features = np.array(
-            [[cloud, sun, radiation, max_temp, mean_temp, min_temp, pressure, snow]]
+            [[cloud, sun, radiation, max_temp, mean_temp, min_temp, pressure]]
         )  # Añadido por Carlos
 
         # Need to put the input data through the scaler used to produce the model before making prediction??
         # REVIEW: SCALER
 
         model = pickle.load(open('./models/best_model.pkl', 'rb'))
-        prediction = model.predict(input_features)[0]  # Añadido por Carlos
+        scaler = pickle.load(open('./transformers/scaler.pkl', 'rb'))
+        scaled_features = scaler.transform(input_features)
+        print(scaled_features, type(scaled_features))
+        prediction = model.predict(scaled_features)[0]  # Añadido por Carlos
 
         # Prepare the result as a dictionary
         result = (
@@ -109,7 +109,6 @@ def make_prediction():
                 'mean_temp': mean_temp,
                 'min_temp': min_temp,
                 'pressure': pressure,
-                'snow': snow,
                 'prediction': round(prediction, 2),
             }
             if all(data)
@@ -118,20 +117,6 @@ def make_prediction():
 
     # Renders template with result
     return render_template('predict.html', result=result)
-
-
-# REVIEW FORECAST, REMOVE IF NOT NECESSARY
-# Forecast
-@app.route('/api/v1/forecast/', methods=['POST', 'GET'])
-def forecast():
-    forecast = None
-    if request.method == 'POST':
-        _dummy_1 = float(request.form['feature1'])
-        _dummy_2 = float(request.form['feature2'])
-
-        # prediction = model.predict(np.array([[feature1, feature2]]))
-
-    return render_template('forecast.html', forecast=forecast)
 
 
 # Update Data
@@ -144,7 +129,7 @@ def update_data():
         f.save(os.path.join(app.config['UPLOAD_FOLDER'], update_name))
 
     # List of uploaded files to select from
-    data_op = get_file_names(UPLOAD_FOLDER)
+    data_op = u.get_file_names(UPLOAD_FOLDER)
 
     return render_template('updateData.html', update_name=update_name, data_op=data_op)
 
@@ -152,41 +137,47 @@ def update_data():
 # Delete Data
 @app.route('/api/v1/delete_data', methods=['POST'])
 def delete_data():
-    # List of uploaded files to select from
-    data_op = get_file_names(UPLOAD_FOLDER)
+    # List of files to delete
+    to_delete = request.form.getlist('dataset_name')
 
-    if request.method == 'POST':
-        # List of files to delete
-        to_delete = request.form.getlist('dataset_name')
+    for file in to_delete:
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], file)
+        if os.path.exists(file_path):
+            try:
+                os.remove(file_path)
+            except Exception as e:
+                return jsonify({'Error': f'could not delete file {file}: {str(e)}'}), 500
+        else:
+            return jsonify({'Error': 'specified file does not exist'}), 404
 
-        for file in to_delete:
-            file_path = os.path.join(app.config['UPLOAD_FOLDER'], file)
-            if os.path.exists(file_path):
-                try:
-                    os.remove(file_path)
-                except Exception as e:
-                    return jsonify({'Error': f'could not delete file {file}: {str(e)}'}), 500
-            else:
-                return jsonify({'Error': 'specified file does not exist'}), 404
-
-        return redirect(url_for('update_data'))
-
-    return render_template('updateData.html', data_op=data_op, delete_name=to_delete)
+    return redirect(url_for('update_data'))
 
 
-# REVIEW: IMPORTANT!!!
 # Retrain
 @app.route('/api/v1/retrain/', methods=['POST', 'GET'])
 def retrain_model():
-    metrics = None
-    if request.method == 'POST':
-        dataset_name = str(request.form.getlist('dataset_name')[0])
-        print(dataset_name)
+    json_url = os.path.join(SITE_ROOT, './data', 'evaluation_results.json')
+    original_metrics = json.load(open(json_url))
 
+    # dataset_name = 'original'
+
+    # if request.method == 'POST':
+    #     dataset_name = str(request.form.getlist('dataset_name')[0])
+    #     print(dataset_name)
+
+    # Review
     # List of uploaded files to select from
-    data_op = get_file_names(UPLOAD_FOLDER)
+    data_op = u.get_file_names(UPLOAD_FOLDER)
 
-    return render_template('retrain.html', metrics=metrics, data_op=data_op)
+    model = pickle.load(open('./models/best_model.pkl', 'rb'))
+    new_model = u.retrain_model(model)
+
+    return render_template('retrain.html', original_metrics=original_metrics, new_metrics=new_model[0], data_op=data_op)
+
+
+@app.route('/api/v1/save_model', methods=['POST'])
+def save_model():
+    pass
 
 
 # Webhook

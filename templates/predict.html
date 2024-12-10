@@ -18,7 +18,6 @@
         <a href="/api/v1/predict_form" class="menuItem" aria-current="page"
           >Predict</a
         >
-        <a href="/api/v1/forecast" class="menuItem">Forecast</a>
         <a href="/api/v1/update_data" class="menuItem">Update Data</a>
         <a href="/api/v1/retrain" class="menuItem">Retrain</a>
       </nav>
@@ -32,36 +31,33 @@
           <tr>
             <td class="param">Cloud (oktas)</td>
             <td class="result">{{ result.cloud }}</td>
+          </tr>
+          <tr>
             <td class="param">Mean Temperature (ºC)</td>
             <td class="result">{{ result.mean_temp }}</td>
           </tr>
+
           <tr>
             <td class="param">Sunshine (hrs)</td>
             <td class="result">{{ result.sun }}</td>
+          </tr>
+          <tr>
             <td class="param">Min Temperature (ºC)</td>
             <td class="result">{{ result.min_temp }}</td>
           </tr>
           <tr>
             <td class="param">Global Radiation (W/m<sup>2</sup>)</td>
             <td class="result">{{ result.radiation }}</td>
+          </tr>
+          <tr>
             <td class="param">Pressure (Pa)</td>
             <td class="result">{{ result.pressure }}</td>
           </tr>
           <tr>
             <td class="param">Max Temperature (ºC)</td>
             <td class="result">{{ result.max_temp }}</td>
-            <td class="param">Snow (cm)</td>
-            <td class="result">{{ result.snow }}</td>
           </tr>
         </table>
-        <!-- <p>Cloud (oktas): {{ result.cloud }}</p>
-        <p>Sunshine (hrs): {{ result.sun }}</p>
-        <p>Global Radiation (W/m<sup>2</sup>): {{ result.radiation }}</p>
-        <p>Max Temperature (ºC): {{ result.max_temp }}</p>
-        <p>Mean Temperature (ºC): {{ result.mean_temp }}</p>
-        <p>Min Temperature (ºC): {{ result.min_temp }}</p>
-        <p>Pressure (Pa): {{ result.pressure }}</p>
-        <p>Snow (cm): {{ result.snow }}</p> -->
 
         <h3>Rainfall prediction: <span class="prediction">{{ result.prediction }} mm</span></h3>
 

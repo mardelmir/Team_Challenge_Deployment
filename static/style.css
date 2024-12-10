@@ -162,6 +162,7 @@ li {
 }
 
 .params-table {
+    width: auto;
     margin: 0.5rem auto;
 }
 
@@ -184,9 +185,13 @@ li {
 }
 
 .param {
-    width: 30%;
+    
     font-family: inherit;
     font-size: 14px;
+}
+
+.result {
+    width: 20%;
 }
 
 .prediction {

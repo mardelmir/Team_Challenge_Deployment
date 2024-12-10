@@ -19,7 +19,6 @@
         <a href="/api/v1/predict_form" class="menuItem" aria-current="page"
           >Predict</a
         >
-        <a href="/api/v1/forecast" class="menuItem">Forecast</a>
         <a href="/api/v1/update_data" class="menuItem">Update Data</a>
         <a href="/api/v1/retrain" class="menuItem">Retrain</a>
       </nav>
@@ -96,22 +95,13 @@
             placeholder="7.5"
             required
           />
-          <label for="pressure">Pressure (Pa):</label>
+          <label for="pressure">Pressure (kPa):</label>
           <input
             id="pressure"
             name="pressure"
             type="number"
             step="0.01"
-            placeholder="101500"
-            required
-          />
-          <label for="snow">Snow Depth (cm):</label>
-          <input
-            id="snow"
-            name="snow"
-            type="number"
-            step="0.01"
-            placeholder="1"
+            placeholder="101.5"
             required
           />
 

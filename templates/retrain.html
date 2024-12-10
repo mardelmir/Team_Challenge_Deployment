@@ -17,7 +17,6 @@
       <nav class="nav">
         <a href="/" class="menuItem">Home</a>
         <a href="/api/v1/predict_form" class="menuItem">Predict</a>
-        <a href="/api/v1/forecast" class="menuItem">Forecast</a>
         <a href="/api/v1/update_data" class="menuItem">Update Data</a>
         <a href="/api/v1/retrain" class="menuItem" aria-current="page"
           >Retrain</a
@@ -28,8 +27,33 @@
       <section class="mainContent">
         <h1>Rainfall Prediction Application</h1>
         <h2>Retrain the model</h2>
+        <h3>Original Metrics</h3>
+        <table class="metrics-table">
+          <tr>
+            <td class="metric">Model</td>
+            <td class="result">{{ original_metrics.Model[0] }}</td>
+          </tr>
+          <tr>
+            <td class="metric">MSE</td>
+            <td class="result">{{ original_metrics.MSE[0] }}</td>
+          </tr>
+          <tr>
+            <td class="metric">RMSE</td>
+            <td class="result">{{ original_metrics.RMSE[0] }}</td>
+          </tr>
+          <tr>
+            <td class="metric">MAPE</td>
+            <td class="result">{{ original_metrics.MAPE[0] }}</td>
+          </tr>
+        </table>
+
         {% if data_op %}
-        <p>Select the dataset you would like to retrain the model with. If none is selected, we'll use our data to retrain the model. If you select more than one, the model will be trained with the first that appears on the list.</p>
+        <p>
+          Select the dataset you would like to retrain the model with. If none
+          is selected, we'll use our data to retrain the model. If you select
+          more than one, the model will be trained with the first that appears
+          on the list.
+        </p>
         <p></p>
         <form
           class="form"
@@ -39,7 +63,7 @@
         >
           {% for file in data_op %}
           <div>
-            <input type="checkbox" name="dataset_name" value="{{file}}"/>
+            <input type="checkbox" name="dataset_name" value="{{file}}" />
             <label for="dataset_name">{{file}}</label>
           </div>
           {% endfor %}
@@ -48,12 +72,40 @@
             <button class="formBtn" type="reset">Reset</button>
           </div>
         </form>
-        {% endif %}
-        
-        {% if metrics %}
-        <p>{{ metrics }}</p>
+        {% endif %} {% if new_metrics %}
+        <h3>New Metrics</h3>
+        <table class="metrics-table">
+          <tr>
+            <td class="metric">Model</td>
+            <td class="result">{{ new_metrics.Model[0] }}</td>
+          </tr>
+          <tr>
+            <td class="metric">MSE</td>
+            <td class="result">{{ new_metrics.MSE[0] }}</td>
+          </tr>
+          <tr>
+            <td class="metric">RMSE</td>
+            <td class="result">{{ new_metrics.RMSE[0] }}</td>
+          </tr>
+          <tr>
+            <td class="metric">MAPE</td>
+            <td class="result">{{ new_metrics.MAPE[0] }}</td>
+          </tr>
+        </table>
+
+        <form >
+          Do you want to keep the new model?
+          <input type="checkbox" name="yes" value="yes"/>
+          <label for="yes">Yes</label>
+          <input type="checkbox" name="no" value="no"/>
+          <label for="no">No</label>
+
+          <div class="actions">
+            <button class="formBtn" type="submit">Send</button>
+          </div>
+        </form>
         {% else %}
-        <p>Retrain feature coming soon...</p>
+        <p>Retrain model with default data</p>
         {% endif %}
       </section>
     </main>
