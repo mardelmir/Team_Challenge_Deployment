@@ -30,7 +30,7 @@ algs = {
 }
 
 scaler = StandardScaler()
-cv_results, my_pipelines = utils.cross_validate_models(algs, X_train, y_train)
+cv_results, my_pipelines = utils.cross_validate_models(algs, scaler, X_train, y_train)
 
 gs_params = {
     'Ridge': {

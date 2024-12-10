@@ -85,13 +85,8 @@ def get_file_names(upload_folder) -> list:
 # =====================================================================================================================================================================
 # Cross-Validate
 
-script_dir = os.path.dirname(os.path.abspath(__file__))
-file_path = os.path.join(script_dir, '../transformers/scaler.pkl')
 
-scaler = pkl.load(open(file_path, 'rb'))
-
-
-def cross_validate_models(models: dict, X_train, y_train) -> dict:
+def cross_validate_models(models: dict, scaler, X_train, y_train) -> dict:
     """
     Performs cross_validation on a dictionary of algorithms {name: algorithm}
     Uses the scaler used in initial training of first model

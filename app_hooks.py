@@ -63,41 +63,29 @@ def make_prediction():
                 min_temp=min_temp,
                 pressure=pressure,
             )
-        )  # Modificado por Carlos + María
-
-    # WJJ- No entiendo esta parte en que hemos mezclado POST y GET requests
-    # parece que estamos haciendo un redirect del POST a un GET pero con la prediction metida como un parametro del URL?
-    # No tiene mas sentido simplemente return the prediction en el POST request y hacer el render directamente?
-
-    # MDM: Ambos métodos son necesarios:
-    # - El POST es el endpoind donde el formulario envía los datos (mirar templates -> predictForm.html -> líneas 29 y 30)
-    # - El GET es para recoger los datos de la URL, lo que no hace falta ahí es el prediction (modificado ya) pero ambos métodos son necesarios.
+        )
 
     # If method = GET, get data from the query parameters
-    cloud = float(request.args.get('cloud', None))
-    sun = float(request.args.get('sun', None))
-    radiation = float(request.args.get('radiation', None))
-    max_temp = float(request.args.get('max_temp', None))
-    mean_temp = float(request.args.get('mean_temp', None))
-    min_temp = float(request.args.get('min_temp', None))
-    pressure = float(request.args.get('pressure', None))
+    cloud = request.args.get('cloud', None)
+    sun = request.args.get('sun', None)
+    radiation = request.args.get('radiation', None)
+    max_temp = request.args.get('max_temp', None)
+    mean_temp = request.args.get('mean_temp', None)
+    min_temp = request.args.get('min_temp', None)
+    pressure = request.args.get('pressure', None)
 
     data = [cloud, sun, radiation, max_temp, mean_temp, min_temp, pressure]
+    data = [float(arg) for arg in data if arg is not None]
     result = None
 
     if all(data):
-        input_features = np.array(
-            [[cloud, sun, radiation, max_temp, mean_temp, min_temp, pressure]]
-        )  # Añadido por Carlos
+        input_features = np.array([data])
 
-        # Need to put the input data through the scaler used to produce the model before making prediction??
-        # REVIEW: SCALER
-
+        # Put the input data through the scaler used to produce the model before making prediction
         model = pickle.load(open('./models/best_model.pkl', 'rb'))
         scaler = pickle.load(open('./transformers/scaler.pkl', 'rb'))
         scaled_features = scaler.transform(input_features)
-        print(scaled_features, type(scaled_features))
-        prediction = model.predict(scaled_features)[0]  # Añadido por Carlos
+        prediction = model.predict(scaled_features)[0]
 
         # Prepare the result as a dictionary
         result = (
@@ -113,9 +101,9 @@ def make_prediction():
             }
             if all(data)
             else None
-        )  # Modificado por Carlos + María
+        )
 
-    # Renders template with result
+    # Render template with result
     return render_template('predict.html', result=result)
 
 
