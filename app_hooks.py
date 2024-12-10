@@ -153,14 +153,14 @@ def retrain_model():
     # List of uploaded files to select from
     data_op = u.get_file_names(UPLOAD_FOLDER)
 
+    # Load original model and scaler
+    model = pickle.load(open('./models/best_model.pkl', 'rb'))
+    scaler = pickle.load(open('./transformers/scaler.pkl', 'rb'))
+
     new_metrics = None
 
     if not data_op:
-        # Load original model and scaler
-        model = pickle.load(open('./models/best_model.pkl', 'rb'))
-        scaler = pickle.load(open('./transformers/scaler.pkl', 'rb'))
-
-        # Retrain with default dataset
+        # Retrain model with default dataset
         new_model = u.retrain_model(model, scaler)
         new_metrics = new_model[0]
         pickle.dump(new_model[1], open(TEMP_MODEL_PATH, 'wb'))
@@ -169,16 +169,12 @@ def retrain_model():
         # Process form to get selected dataset name
         dataset_name = str(request.form.getlist('dataset_name')[0])
 
-        # Load original model and scaler
-        model = pickle.load(open('./models/best_model.pkl', 'rb'))
-        scaler = pickle.load(open('./transformers/scaler.pkl', 'rb'))
-
         if dataset_name != 'default':
-            # Retrain with selected dataset
+            # Retrain model with selected dataset
             new_data_path = f'{UPLOAD_FOLDER}/{dataset_name}'
             new_model = u.retrain_model(model, scaler, file_path=new_data_path)
         else:
-            # Retrain with default data
+            # Retrain model with default data
             new_model = u.retrain_model(model, scaler)
 
         new_metrics = new_model[0]
