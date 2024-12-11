@@ -18,7 +18,7 @@ ALLOWED_EXTENSIONS = {'csv'}
 app = Flask(__name__)
 app.config['DEBUG'] = True
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['MAX_CONTENT_LENGTH'] = 350 * 1000  # limits uploads to 50KB per file
+app.config['MAX_CONTENT_LENGTH'] = 350 * 1000  # limits uploads to 350KB per file
 
 
 # Landing page (endpoint /)
