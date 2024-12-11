@@ -25,6 +25,7 @@
     <main class="main">
       <section class="mainContent">
         <h1>Rainfall Prediction Application</h1>
+
         {% if result %}
         <h3>Entered parameters:</h3>
         <table class="params-table">
@@ -33,33 +34,38 @@
             <td class="result">{{ result.cloud }}</td>
           </tr>
           <tr>
-            <td class="param">Mean Temperature (ºC)</td>
-            <td class="result">{{ result.mean_temp }}</td>
-          </tr>
-
-          <tr>
             <td class="param">Sunshine (hrs)</td>
             <td class="result">{{ result.sun }}</td>
-          </tr>
-          <tr>
-            <td class="param">Min Temperature (ºC)</td>
-            <td class="result">{{ result.min_temp }}</td>
           </tr>
           <tr>
             <td class="param">Global Radiation (W/m<sup>2</sup>)</td>
             <td class="result">{{ result.radiation }}</td>
           </tr>
           <tr>
-            <td class="param">Pressure (Pa)</td>
-            <td class="result">{{ result.pressure }}</td>
+            <td class="param">Min Temperature (ºC)</td>
+            <td class="result">{{ result.min_temp }}</td>
+          </tr>
+          <tr>
+            <td class="param">Mean Temperature (ºC)</td>
+            <td class="result">{{ result.mean_temp }}</td>
           </tr>
           <tr>
             <td class="param">Max Temperature (ºC)</td>
             <td class="result">{{ result.max_temp }}</td>
           </tr>
+          <tr>
+            <td class="param">Pressure (Pa)</td>
+            <td class="result">{{ result.pressure }}</td>
+          </tr>
         </table>
 
-        <h3>Rainfall prediction: <span class="prediction">{{ result.prediction }} mm</span></h3>
+        <h3>
+          Rainfall prediction:
+          <span class="prediction">{{ result.prediction }} mm</span>
+        </h3>
+
+        {% elif error %}
+        <p>{{ error }}</p>
 
         {% else %}
         <p>

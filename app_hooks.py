@@ -36,7 +36,8 @@ def get_prediction_form():
 
 """
 Test request for /api/v1/predict:
-http://127.0.0.1:5000/api/v1/predict?cloud=4.0&sun=6&radiation=9.0&max_temp=12&mean_temp=10&min_temp=2&pressure=101&snow=2.0
+http://127.0.0.1:5000/api/v1/predict?cloud=4.0&sun=6&radiation=9.0&max_temp=12&mean_temp=10&min_temp=2&pressure=101
+https://mardelmir1.pythonanywhere.com/api/v1/predict?cloud=4.0&sun=6&radiation=9.0&max_temp=12&mean_temp=10&min_temp=2&pressure=101
 """
 
 
@@ -44,69 +45,124 @@ http://127.0.0.1:5000/api/v1/predict?cloud=4.0&sun=6&radiation=9.0&max_temp=12&m
 @app.route('/api/v1/predict/', methods=['POST', 'GET'])
 def make_prediction():
     if request.method == 'POST':
-        # Form data
+        # If method == POST, get data from form
         cloud = request.form['cloud']
         sun = request.form['sun']
         radiation = request.form['radiation']
         max_temp = request.form['max_temp']
         mean_temp = request.form['mean_temp']
         min_temp = request.form['min_temp']
-        pressure = float(request.form['pressure']) * 1000
+        pressure = request.form['pressure']
+    else:
+        # If method == GET, get data from the query parameters
+        cloud = request.args.get('cloud')
+        sun = request.args.get('sun')
+        radiation = request.args.get('radiation')
+        max_temp = request.args.get('max_temp')
+        mean_temp = request.args.get('mean_temp')
+        min_temp = request.args.get('min_temp')
+        pressure = request.args.get('pressure')
 
-        # Redirection
-        return redirect(
-            url_for(
-                'make_prediction',
-                cloud=cloud,
-                sun=sun,
-                radiation=radiation,
-                max_temp=max_temp,
-                mean_temp=mean_temp,
-                min_temp=min_temp,
-                pressure=pressure,
-            )
-        )
+    try:
+        data = [cloud, sun, radiation, max_temp, mean_temp, min_temp, pressure]
+        if not all(data):
+            return render_template('predict.html', result=None, error='Incomplete data')
 
-    # If method = GET, get data from the query parameters
-    cloud = request.args.get('cloud', None)
-    sun = request.args.get('sun', None)
-    radiation = request.args.get('radiation', None)
-    max_temp = request.args.get('max_temp', None)
-    mean_temp = request.args.get('mean_temp', None)
-    min_temp = request.args.get('min_temp', None)
-    pressure = request.args.get('pressure', None)
-
-    data = [cloud, sun, radiation, max_temp, mean_temp, min_temp, pressure]
-    data = [float(arg) for arg in data if arg is not None]
-    result = None
-
-    if all(data):
+        # Convert data to float
+        data = [float(x) if x != pressure else float(x) * 1000 for x in data]
         input_features = np.array([data])
 
-        # Put the input data through the scaler used to produce the model before making prediction
+        # Load model, scale data and make prediction
         model = pickle.load(open('./models/best_model.pkl', 'rb'))
         scaler = pickle.load(open('./transformers/scaler.pkl', 'rb'))
         scaled_features = scaler.transform(input_features)
         prediction = model.predict(scaled_features)[0]
 
         # Prepare the result as a dictionary
-        result = (
-            {
-                'cloud': cloud,
-                'sun': sun,
-                'radiation': radiation,
-                'max_temp': max_temp,
-                'mean_temp': mean_temp,
-                'min_temp': min_temp,
-                'pressure': pressure,
-                'prediction': round(prediction, 2),
-            }
-            if all(data)
-            else None
-        )
+        result = {
+            'cloud': cloud,
+            'sun': sun,
+            'radiation': radiation,
+            'max_temp': max_temp,
+            'mean_temp': mean_temp,
+            'min_temp': min_temp,
+            'pressure': pressure,
+            'prediction': round(prediction, 2),
+        }
 
-    # Render template with result
-    return render_template('predict.html', result=result)
+        return render_template('predict.html', result=result)
+
+    except ValueError as e:
+        return render_template('predict.html', result=None, error=f'Value error: {str(e)}')
+    except Exception as e:
+        return render_template('predict.html', result=None, error=f'Unexpected error: {str(e)}')
+
+
+# def make_prediction():
+#     if request.method == 'POST':
+#         # Form data
+#         cloud = request.form['cloud']
+#         sun = request.form['sun']
+#         radiation = request.form['radiation']
+#         max_temp = request.form['max_temp']
+#         mean_temp = request.form['mean_temp']
+#         min_temp = request.form['min_temp']
+#         pressure = float(request.form['pressure']) * 1000
+
+#         # Redirection
+#         return redirect(
+#             url_for(
+#                 'make_prediction',
+#                 cloud=cloud,
+#                 sun=sun,
+#                 radiation=radiation,
+#                 max_temp=max_temp,
+#                 mean_temp=mean_temp,
+#                 min_temp=min_temp,
+#                 pressure=pressure,
+#             )
+#         )
+
+# # If method = GET, get data from the query parameters
+# cloud = request.args.get('cloud', None)
+# sun = request.args.get('sun', None)
+# radiation = request.args.get('radiation', None)
+# max_temp = request.args.get('max_temp', None)
+# mean_temp = request.args.get('mean_temp', None)
+# min_temp = request.args.get('min_temp', None)
+# pressure = request.args.get('pressure', None)
+
+# data = [cloud, sun, radiation, max_temp, mean_temp, min_temp, pressure]
+# data = [float(arg) for arg in data if arg is not None]
+# result = None
+
+# if all(data):
+#     input_features = np.array([data])
+
+#     # Put the input data through the scaler used to produce the model before making prediction
+#     model = pickle.load(open('./models/best_model.pkl', 'rb'))
+#     scaler = pickle.load(open('./transformers/scaler.pkl', 'rb'))
+#     scaled_features = scaler.transform(input_features)
+#     prediction = model.predict(scaled_features)[0]
+
+#     # Prepare the result as a dictionary
+#     result = (
+#         {
+#             'cloud': cloud,
+#             'sun': sun,
+#             'radiation': radiation,
+#             'max_temp': max_temp,
+#             'mean_temp': mean_temp,
+#             'min_temp': min_temp,
+#             'pressure': pressure,
+#             'prediction': round(prediction, 2),
+#         }
+#         if all(data)
+#         else None
+#     )
+
+# # Render template with result
+# return render_template('predict.html', result=result)
 
 
 # Update Data
