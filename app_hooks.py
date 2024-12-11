@@ -172,6 +172,7 @@ def retrain_model():
     return render_template('retrain.html', original_metrics=original_metrics, new_metrics=new_metrics, data_op=data_op)
 
 
+# Save model
 @app.route('/api/v1/save_model', methods=['POST'])
 def save_model():
     answer = str(request.form.getlist('save_new_model')[0])
